@@ -15,7 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// === 完整接口列表 (30个) ===
+// === 完整接口列表 ===
 const DEFAULT_SITES = [
     { key: "ffzy", name: "非凡资源", api: "https://cj.ffzyapi.com/api.php/provide/vod/", active: true },
     { key: "bfzy", name: "暴风资源", api: "https://bfzyapi.com/api.php/provide/vod/", active: true },
@@ -49,11 +49,14 @@ const DEFAULT_SITES = [
     { key: "bjzy", name: "八戒资源", api: "https://api.bjzyapi.com/api.php/provide/vod/", active: true }
 ];
 
-// 初始化数据库逻辑
+function saveDB(data) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
+
 function getDB() { 
     try {
         if (!fs.existsSync(DATA_FILE)) {
-            fs.writeFileSync(DATA_FILE, JSON.stringify({ sites: DEFAULT_SITES }, null, 2));
+            saveDB({ sites: DEFAULT_SITES });
             return { sites: DEFAULT_SITES };
         }
         const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
@@ -74,11 +77,7 @@ function getDB() {
         return { sites: DEFAULT_SITES };
     }
 }
-function saveDB(data) { fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2)); }
 
-// === API 路由 ===
-
-// 测速
 app.get('/api/check', async (req, res) => {
     const { key } = req.query;
     const sites = getDB().sites;
@@ -93,7 +92,6 @@ app.get('/api/check', async (req, res) => {
     }
 });
 
-// 首页热门
 app.get('/api/hot', async (req, res) => {
     const priority = ['ffzy', 'bfzy', 'lzi', 'dbzy'];
     const sites = getDB().sites.filter(s => priority.includes(s.key));
@@ -107,7 +105,6 @@ app.get('/api/hot', async (req, res) => {
     res.json({ list: [] });
 });
 
-// 全局搜索
 app.get('/api/search', async (req, res) => {
     const { wd } = req.query;
     if (!wd) return res.json({ list: [] });
@@ -115,7 +112,8 @@ app.get('/api/search', async (req, res) => {
     const promises = sites.map(async (site) => {
         try {
             const response = await axios.get(`${site.api}?ac=list&wd=${encodeURIComponent(wd)}&out=json`, { timeout: 8000 });
-            const list = response.data.list || response.data.data;
+            const data = response.data;
+            const list = data.list || data.data;
             if (Array.isArray(list)) {
                 return list.map(item => ({ ...item, site_key: site.key, site_name: site.name, latency: 0 }));
             }
@@ -126,7 +124,6 @@ app.get('/api/search', async (req, res) => {
     res.json({ list: results.flat() });
 });
 
-// 视频详情
 app.get('/api/detail', async (req, res) => {
     const { site_key, id } = req.query;
     const targetSite = getDB().sites.find(s => s.key === site_key);
@@ -137,11 +134,17 @@ app.get('/api/detail', async (req, res) => {
     } catch (e) { res.status(500).json({ error: "Source Error" }); }
 });
 
-// 管理端接口
 app.post('/api/admin/login', (req, res) => {
     req.body.password === ADMIN_PASSWORD ? res.json({ success: true }) : res.status(403).json({ success: false });
 });
 
 app.get('/api/admin/sites', (req, res) => res.json(getDB().sites));
 
-app.post('/api/admin/sites', (req, res) =>
+app.post('/api/admin/sites', (req, res) => { 
+    saveDB({ sites: req.body.sites }); 
+    res.json({ success: true }); 
+});
+
+app.listen(PORT, () => { 
+    console.log(`服务已启动: http://localhost:${PORT}`); 
+});
