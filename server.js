@@ -15,61 +15,62 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// === 完整接口列表 ===
+// 默认接口配置 (保持你的 30+ 个接口不变)
 const DEFAULT_SITES = [
-    { key: "ffzy", name: "非凡资源", api: "https://cj.ffzyapi.com/api.php/provide/vod/", active: true },
-    { key: "bfzy", name: "暴风资源", api: "https://bfzyapi.com/api.php/provide/vod/", active: true },
-    { key: "lzi", name: "量子资源", api: "https://cj.lziapi.com/api.php/provide/vod/", active: true },
-    { key: "dbzy", name: "登博资源", api: "https://dbzyzapi.com/api.php/provide/vod/", active: true },
-    { key: "kuaiche", name: "快车资源", api: "https://cj.kczyapi.com/api.php/provide/vod/", active: true },
-    { key: "fszy", name: "飞速资源", api: "https://www.feisuzyapi.com/api.php/provide/vod/", active: true },
-    { key: "wlzy", name: "卧龙资源", api: "https://wolongzyw.com/api.php/provide/vod/", active: true },
-    { key: "ikun", name: "iKun资源", api: "https://ikunzyapi.com/api.php/provide/vod/", active: true },
-    { key: "guandie", name: "光碟资源", api: "https://api.guandie.pro/api.php/provide/vod/", active: true },
-    { key: "suoni", name: "索尼资源", api: "https://suoniapi.com/api.php/provide/vod/", active: true },
-    { key: "haiwaizh", name: "海外资源", api: "https://haiwaikan.com/api.php/provide/vod/", active: true },
-    { key: "tianyi", name: "天翼资源", api: "https://www.tianyiapi.com/api.php/provide/vod/", active: true },
-    { key: "leihu", name: "雷虎资源", api: "https://www.leihuzyapi.com/api.php/provide/vod/", active: true },
-    { key: "mogu", name: "蘑菇资源", api: "https://moguzuida.com/api.php/provide/vod/", active: true },
-    { key: "jinying", name: "金鹰资源", api: "https://jyzyapi.com/api.php/provide/vod/", active: true },
-    { key: "hengyang", name: "衡阳资源", api: "https://hyzyapi.com/api.php/provide/vod/", active: true },
-    { key: "subo", name: "速播资源", api: "https://subocaiji.com/api.php/provide/vod/", active: true },
-    { key: "kyzy", name: "快云资源", api: "https://kuaiyun-api.com/api.php/provide/vod/", active: true },
-    { key: "18k", name: "18k资源", api: "https://www.18kzyapi.com/api.php/provide/vod/", active: true },
-    { key: "gszy", name: "光速资源", api: "https://api.guangsuapi.com/api.php/provide/vod/", active: true },
-    { key: "6uzy", name: "6U资源", api: "http://api.6uzy.com/api.php/provide/vod/", active: true },
-    { key: "uzy", name: "U资源", api: "https://api.uzyapi.com/api.php/provide/vod/", active: true },
-    { key: "m3u8zy", name: "M3U8资源", api: "https://m3u8.api.m3u8zy.com/api.php/provide/vod/", active: true },
-    { key: "hnzy", name: "红牛资源", api: "https://www.hongniuzy2.com/api.php/provide/vod/", active: true },
-    { key: "kuku", name: "酷酷资源", api: "https://www.kukuzy.me/api.php/provide/vod/", active: true },
-    { key: "zxzj", name: "在线之家", api: "https://api.zxzj.me/api.php/provide/vod/", active: true },
-    { key: "yhzy", name: "樱花资源", api: "https://m3u8.yhzyapi.com/api.php/provide/vod/", active: true },
-    { key: "modu", name: "魔都资源", api: "https://www.moduapi.cc/api.php/provide/vod/", active: true },
-    { key: "juzi", name: "橘子资源", api: "https://juziapi.com/api.php/provide/vod/", active: true },
-    { key: "bjzy", name: "八戒资源", api: "https://api.bjzyapi.com/api.php/provide/vod/", active: true }
+    { key: "ffzy", name: "非凡影视", api: "https://api.ffzyapi.com/api.php/provide/vod", active: true },
+    { key: "bfzy", name: "暴风资源", api: "https://bfzyapi.com/api.php/provide/vod", active: true },
+    { key: "dyttzy", name: "电影天堂", api: "http://caiji.dyttzyapi.com/api.php/provide/vod", active: true },
+    { key: "tyyszy", name: "天涯资源", api: "https://tyyszy.com/api.php/provide/vod", active: true },
+    { key: "zy360", name: "360资源", api: "https://360zy.com/api.php/provide/vod", active: true },
+    { key: "maotaizy", name: "茅台资源", api: "https://caiji.maotaizy.cc/api.php/provide/vod", active: true },
+    { key: "wolong", name: "卧龙资源", api: "https://wolongzyw.com/api.php/provide/vod", active: true },
+    { key: "jisu", name: "极速资源", api: "https://jszyapi.com/api.php/provide/vod", active: true },
+    { key: "dbzy", name: "豆瓣资源", api: "https://dbzy.tv/api.php/provide/vod", active: true },
+    { key: "mozhua", name: "魔爪资源", api: "https://mozhuazy.com/api.php/provide/vod", active: true },
+    { key: "mdzy", name: "魔都资源", api: "https://www.mdzyapi.com/api.php/provide/vod", active: true },
+    { key: "zuid", name: "最大资源", api: "https://api.zuidapi.com/api.php/provide/vod", active: true },
+    { key: "yinghua", name: "樱花资源", api: "https://m3u8.apiyhzy.com/api.php/provide/vod", active: true },
+    { key: "wujin", name: "无尽资源", api: "https://api.wujinapi.me/api.php/provide/vod", active: true },
+    { key: "wwzy", name: "旺旺短剧", api: "https://wwzy.tv/api.php/provide/vod", active: true },
+    { key: "ikun", name: "iKun资源", api: "https://ikunzyapi.com/api.php/provide/vod", active: true },
+    { key: "lzi", name: "量子资源", api: "https://cj.lziapi.com/api.php/provide/vod", active: true },
+    { key: "bdzy", name: "百度资源", api: "https://api.apibdzy.com/api.php/provide/vod", active: true },
+    { key: "hongniuzy", name: "红牛资源", api: "https://www.hongniuzy2.com/api.php/provide/vod", active: true },
+    { key: "xinlangaa", name: "新浪资源", api: "https://api.xinlangapi.com/xinlangapi.php/provide/vod", active: true },
+    { key: "ckzy", name: "CK资源", api: "https://ckzy.me/api.php/provide/vod", active: true },
+    { key: "ukuapi", name: "U酷资源", api: "https://api.ukuapi.com/api.php/provide/vod", active: true },
+    { key: "1080zyk", name: "1080资源", api: "https://api.1080zyku.com/inc/apijson.php/", active: true },
+    { key: "hhzyapi", name: "豪华资源", api: "https://hhzyapi.com/api.php/provide/vod", active: true },
+    { key: "subocaiji", name: "速博资源", api: "https://subocaiji.com/api.php/provide/vod", active: true },
+    { key: "p2100", name: "飘零资源", api: "https://p2100.net/api.php/provide/vod", active: true },
+    { key: "aqyzy", name: "爱奇艺", api: "https://iqiyizyapi.com/api.php/provide/vod", active: true },
+    { key: "yzzy", name: "优质资源", api: "https://api.yzzy-api.com/inc/apijson.php", active: true },
+    { key: "myzy", name: "猫眼资源", api: "https://api.maoyanapi.top/api.php/provide/vod", active: true },
+    { key: "rycj", name: "如意资源", api: "https://cj.rycjapi.com/api.php/provide/vod", active: true },
+    { key: "jinyingzy", name: "金鹰点播", api: "https://jinyingzy.com/api.php/provide/vod", active: true },
+    { key: "guangsuapi", name: "光速资源", api: "https://api.guangsuapi.com/api.php/provide/vod", active: true }
 ];
+    { key: "ffzy", name: "非凡影视", api: "https://替换接口 一行一条", active: true },
 
-function saveDB(data) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+if (!fs.existsSync(DATA_FILE) || FORCE_UPDATE) {
+    // 只有在没有文件时，或者强制更新开启时，才重置配置
+    // 但为了不覆盖你可能手动添加的，我们这里只在文件不存在时写入，或者你确认要重置
+    if(!fs.existsSync(DATA_FILE)) {
+        fs.writeFileSync(DATA_FILE, JSON.stringify({ sites: DEFAULT_SITES }, null, 2));
+    }
 }
 
 function getDB() { 
     try {
-        if (!fs.existsSync(DATA_FILE)) {
-            saveDB({ sites: DEFAULT_SITES });
-            return { sites: DEFAULT_SITES };
-        }
-        const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+        const data = JSON.parse(fs.readFileSync(DATA_FILE));
+        // 简单的合并逻辑：确保代码里的30多个接口都在数据库里
         if(FORCE_UPDATE) {
-            let dbSites = data.sites || [];
-            let changed = false;
+            const dbSites = data.sites || [];
             DEFAULT_SITES.forEach(defSite => {
                 if(!dbSites.find(s => s.key === defSite.key)) {
                     dbSites.push(defSite);
-                    changed = true;
                 }
             });
-            if(changed) saveDB({ sites: dbSites });
             return { sites: dbSites };
         }
         return data;
@@ -77,24 +78,30 @@ function getDB() {
         return { sites: DEFAULT_SITES };
     }
 }
+function saveDB(data) { fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2)); }
 
+// === ★ 新增：真实测速接口 ★ ===
 app.get('/api/check', async (req, res) => {
     const { key } = req.query;
     const sites = getDB().sites;
     const site = sites.find(s => s.key === key);
+    
     if (!site) return res.json({ latency: 9999 });
+
     const start = Date.now();
     try {
+        // 尝试请求该接口的首页（只请求一页，极简模式）
         await axios.get(`${site.api}?ac=list&pg=1`, { timeout: 3000 });
-        res.json({ latency: Date.now() - start });
+        const latency = Date.now() - start;
+        res.json({ latency: latency });
     } catch (e) {
-        res.json({ latency: 9999 });
+        res.json({ latency: 9999 }); // 超时或错误
     }
 });
 
+// === 热门接口 ===
 app.get('/api/hot', async (req, res) => {
-    const priority = ['ffzy', 'bfzy', 'lzi', 'dbzy'];
-    const sites = getDB().sites.filter(s => priority.includes(s.key));
+    const sites = getDB().sites.filter(s => ['ffzy', 'bfzy', 'lzi', 'dbzy'].includes(s.key));
     for (const site of sites) {
         try {
             const response = await axios.get(`${site.api}?ac=list&pg=1&h=24&out=json`, { timeout: 3000 });
@@ -105,25 +112,37 @@ app.get('/api/hot', async (req, res) => {
     res.json({ list: [] });
 });
 
+// === 搜索接口 (为了速度，搜索阶段不测速) ===
 app.get('/api/search', async (req, res) => {
     const { wd } = req.query;
+    console.log(`[Search] ${wd}`);
     if (!wd) return res.json({ list: [] });
+    
     const sites = getDB().sites.filter(s => s.active);
+    
     const promises = sites.map(async (site) => {
         try {
-            const response = await axios.get(`${site.api}?ac=list&wd=${encodeURIComponent(wd)}&out=json`, { timeout: 8000 });
+            const response = await axios.get(`${site.api}?ac=list&wd=${encodeURIComponent(wd)}&out=json`, { timeout: 6000 });
             const data = response.data;
             const list = data.list || data.data;
-            if (Array.isArray(list)) {
-                return list.map(item => ({ ...item, site_key: site.key, site_name: site.name, latency: 0 }));
+            if (list && Array.isArray(list)) {
+                return list.map(item => ({
+                    ...item, 
+                    site_key: site.key, 
+                    site_name: site.name,
+                    // 这里先不测速，给个默认值，点击详情再测
+                    latency: 0 
+                }));
             }
         } catch (e) {}
         return [];
     });
+    
     const results = await Promise.all(promises);
     res.json({ list: results.flat() });
 });
 
+// === 详情接口 ===
 app.get('/api/detail', async (req, res) => {
     const { site_key, id } = req.query;
     const targetSite = getDB().sites.find(s => s.key === site_key);
@@ -134,17 +153,8 @@ app.get('/api/detail', async (req, res) => {
     } catch (e) { res.status(500).json({ error: "Source Error" }); }
 });
 
-app.post('/api/admin/login', (req, res) => {
-    req.body.password === ADMIN_PASSWORD ? res.json({ success: true }) : res.status(403).json({ success: false });
-});
-
+app.post('/api/admin/login', (req, res) => req.body.password === ADMIN_PASSWORD ? res.json({ success: true }) : res.status(403).json({ success: false }));
 app.get('/api/admin/sites', (req, res) => res.json(getDB().sites));
+app.post('/api/admin/sites', (req, res) => { saveDB({sites: req.body.sites}); res.json({ success: true }); });
 
-app.post('/api/admin/sites', (req, res) => { 
-    saveDB({ sites: req.body.sites }); 
-    res.json({ success: true }); 
-});
-
-app.listen(PORT, () => { 
-    console.log(`服务已启动: http://localhost:${PORT}`); 
-});
+app.listen(PORT, () => { console.log(`服务已启动: http://localhost:${PORT}`); });
